@@ -1,16 +1,15 @@
 // dotenv config
+const { OpenAI } = require("openai");
 require("dotenv").config();
 const express = require("express");
-// import modules from OpenAI Library
-const {configuration, OpenAIApi} = require("openai");
+
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
 
 const app = express();
 app.use(express.json());
-
-const configuration = new configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
 
 const port = process.env.PORT || 5000;
 // POST request endpoint
@@ -23,16 +22,16 @@ app.post("/ask", async (req, res) => {
             throw new error("No prompt provided");
         }
         // triggers OpenAI completion
-        const response = await openai.createCompletion({
-            model:"text-davinci-003",
+        const response = await openai.completions.create({
+            model: "text-davinci-003",
             prompt,
         });
         //retreives the completion text from the response
-        const completion= response.data.choices[0].text;
+        const completion= response.choices[0].text;
         //return result
         return res.status(200).json({
             success:true,
-            message:prompt,
+            message:completion,
         });
     } catch( error) {
         console.log(error.message);
@@ -40,3 +39,4 @@ app.post("/ask", async (req, res) => {
 });
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
+
