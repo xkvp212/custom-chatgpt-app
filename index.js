@@ -27,7 +27,7 @@ app.post("/ask", async (req, res) => {
             prompt,
             max_tokens: 70, // max text response characters
         });
-        //retreives the completion text from the response
+        //retreives the completion text from the responser
         const completion= response.choices[0].text;
         //return result
         return res.status(200).json({
